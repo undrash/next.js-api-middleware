@@ -33,7 +33,6 @@ const middleware_4: Middleware = async (_req, next) => {
 };
 
 const hello = async (req: Request) => {
-  console.log('Running hello handler');
   return NextResponse.json({ data: 'Hello World' });
 };
 
