@@ -8,26 +8,26 @@ export type Middleware = (
   next: NextFunction,
 ) => Promise<void>;
 
-const execMiddlewares = async (
+const execMiddleware = async (
   req: NextApiRequest,
   res: NextApiResponse,
-  middlewares: Middleware[],
+  middleware: Middleware[],
   index = 0,
 ) => {
-  if (res.headersSent || !middlewares[index]) return;
+  if (res.headersSent || !middleware[index]) return;
 
-  if (typeof middlewares[index] !== 'function') {
+  if (typeof middleware[index] !== 'function') {
     res.status(500).end('Middleware must be a function!');
     throw new Error('Middleware must be a function!');
   }
 
-  await middlewares[index](req, res, async () => {
-    await execMiddlewares(req, res, middlewares, index + 1);
+  await middleware[index](req, res, async () => {
+    await execMiddleware(req, res, middleware, index + 1);
   });
 };
 
 export const handler =
-  (...middlewares: Middleware[]) =>
+  (...middleware: Middleware[]) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
-    await execMiddlewares(req, res, middlewares);
+    await execMiddleware(req, res, middleware);
   };
